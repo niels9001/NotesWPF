@@ -5,11 +5,187 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:NotesWPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="MainWindow"
-    Width="800"
-    Height="450"
+    Title="Contoso Camera Manager"
+    Width="1280"
+    Height="600"
+    Icon="Icon.ico"
+    Loaded="Window_Loaded"
+    ResizeMode="CanResize"
+    ThemeMode="System"
     mc:Ignorable="d">
     <Grid>
-        <Button Click="Button_Click"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <!--  MENU  -->
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Device">
+                    <MenuItem Header="Search devices" />
+                    <MenuItem Header="Connect" />
+                    <MenuItem Header="Disconnect" />
+                </MenuItem>
+                <MenuItem Header="About">
+                    <MenuItem Click="Config_Click" Header="Configuration" />
+                    <MenuItem Header="Check for updates" />
+                    <MenuItem Header="Version" />
+                </MenuItem>
+            </Menu>
+            <StackPanel />
+        </DockPanel>
+
+        <Grid x:Name="contentGrid" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="480" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!--  SETTINGS  -->
+            <Border
+                Margin="12"
+                Padding="20,16,0,20"
+                Style="{StaticResource CardBackgroundStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock FontSize="24" Text="Device Settings" />
+                        <Grid Margin="0,12,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Image
+                                Width="36"
+                                VerticalAlignment="Center"
+                                Source="pack://application:,,,/Assets/ContosoCamera.png" />
+                            <StackPanel
+                                Grid.Column="1"
+                                Margin="12,0,0,0"
+                                Orientation="Vertical">
+                                <TextBlock Text="Contoso Camera PRO 3" />
+                                <TextBlock FontSize="12" Text="v100.4.3" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                    <ScrollViewer Grid.Row="1">
+                        <Grid Margin="0,0,12,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock
+                                    Margin="0,12,0,8"
+                                    FontSize="16"
+                                    Text="Live view" />
+                                <CheckBox Content="Show overlay" />
+                                <TextBlock Margin="0,12,0,0" Text="Enlarge" />
+                                <Slider
+                                    Maximum="10"
+                                    Minimum="0"
+                                    Value="8" />
+                                <TextBlock Margin="0,12,0,0" Text="Rotate" />
+                                <Slider
+                                    Maximum="10"
+                                    Minimum="0"
+                                    Value="3" />
+                                <TextBlock Margin="0,12,0,0" Text="Composite ratio" />
+                                <Slider
+                                    Maximum="10"
+                                    Minimum="0"
+                                    Value="9" />
+                            </StackPanel>
+                            <Expander
+                                Grid.Row="1"
+                                Margin="0,12,0,0"
+                                VerticalAlignment="Top"
+                                Header="Advanced settings">
+                                <Expander.Content>
+                                    <StackPanel Orientation="Vertical">
+                                        <TextBlock Margin="0,0,0,8" Text="Device name" />
+                                        <TextBox Text="{Binding Title}" />
+                                        <TextBlock Margin="0,12,0,8" Text="Shutter counter" />
+                                        <TextBox Text="7000" />
+                                        <TextBlock Margin="0,12,0,0" Text="Saturation" />
+                                        <Slider
+                                            HorizontalAlignment="Stretch"
+                                            Maximum="10"
+                                            Minimum="0"
+                                            Value="3" />
+                                        <TextBlock Margin="0,12,0,0" Text="Brightness" />
+                                        <Slider
+                                            HorizontalAlignment="Stretch"
+                                            Maximum="10"
+                                            Minimum="0"
+                                            Value="5" />
+                                        <CheckBox Margin="0,8,0,0" Content="Turn off after 5 min of inactive use" />
+                                        <TextBlock Margin="0,12,0,8" Text="Startup mode" />
+                                        <ComboBox SelectedIndex="1">
+                                            <ComboBoxItem>Photo</ComboBoxItem>
+                                            <ComboBoxItem>Video</ComboBoxItem>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </Expander.Content>
+                            </Expander>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <!--  PICTURES  -->
+            <Border
+                Grid.Column="1"
+                Margin="4,12,12,12"
+                Padding="20,16,0,16"
+                Style="{StaticResource CardBackgroundStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <TextBlock FontSize="24" Text="Pictures" />
+                        <Button
+                            Margin="0,0,24,0"
+                            HorizontalAlignment="Right"
+                            Click="Import_Click"
+                            Content="Import"
+                            Style="{StaticResource PurpleButtonStyle}" />
+                    </Grid>
+                    <ListView
+                        x:Name="PicturesListView"
+                        Grid.Row="1"
+                        Margin="4,12,12,12"
+                        Padding="20,16,0,16"
+                        BorderBrush="Transparent"
+                        ItemsSource="{Binding PictureLibrary, Mode=OneWay}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        SelectionChanged="PicturesListView_SelectionChanged"
+                        SelectionMode="Single">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                        <ListView.ItemTemplate>
+                            <DataTemplate DataType="x:String">
+                                <Border
+                                    Width="100"
+                                    Height="100"
+                                    CornerRadius="4">
+                                    <Border.Background>
+                                        <ImageBrush ImageSource="{Binding}" />
+                                    </Border.Background>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

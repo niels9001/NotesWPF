@@ -20,6 +20,16 @@
             Height="300"
             Margin="16"
             HorizontalAlignment="Left" />
-        <TextBlock Grid.Column="1" Text="" />
+        <TextBlock
+            x:Name="OutputTxt"
+            Grid.Column="1"
+            Text="" />
+        <ProgressBar
+            x:Name="Loader"
+            Grid.Column="1"
+            Width="60"
+            Height="20"
+            IsEnabled="True"
+            Visibility="Visible" />
     </Grid>
 </Window>

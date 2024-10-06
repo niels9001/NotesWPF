@@ -1,5 +1,8 @@
-﻿using NotesWPF.Models;
+﻿using Microsoft.Win32;
+using Microsoft.Windows.AI.Imaging;
+using NotesWPF.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -65,13 +68,26 @@ namespace NotesWPF
             e.Handled = true;
         }
 
-        private void Window_Drop(object sender, DragEventArgs e)
+        private async void Window_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                System.Diagnostics.Debug.WriteLine($"File Dropped: {string.Join(", ", files)}");
                 // You can now process the file paths as needed
+
+                await TextRecognizer.MakeAvailableAsync();
+                var textRecognizer = await TextRecognizer.CreateAsync();
+
+                var options = new TextRecognizerOptions();
+
+                // create ImageBuffer from image
+                var imageBuffer = ImageBuffer.CreateBufferAttachedToBitmap(files[0]);
+
+                var recognizedText = await textRecognizer.RecognizeTextFromImageAsync(imageBuffer, options);
+
+                string singleLine = string.Join(" ", recognizedText.Lines.Select(x => x.Text));
+                singleLine = "Microsoft Corporation One Microsoft Way Redmond Washington 98052-6399";
+                SmartForm.Analyze(singleLine);
             }
         }
     }

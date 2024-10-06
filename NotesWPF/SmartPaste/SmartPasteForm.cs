@@ -150,11 +150,11 @@ Rules:
             return textClipboardContent;
         }
 
-        private async void SmartPasteButton_Click(object sender, RoutedEventArgs e)
+        public async void Analyze(string text)
         {
-            ((Button)sender).IsEnabled = false;
+           // ((Button)sender).IsEnabled = false;
             pasteProgressRing.Visibility = Visibility.Visible;
-            string clipboardText = await GetTextFromClipboard();
+            string clipboardText = text;
             _ = Task.Run(async () =>
             {
                 Dictionary<string, string> pasteValues = await InferPasteValues(clipboardText);
@@ -162,7 +162,7 @@ Rules:
                 {
                     PasteValuesToForm(pasteValues);
                     pasteProgressRing.Visibility = Visibility.Collapsed;
-                    ((Button)sender).IsEnabled = true;
+                   // ((Button)sender).IsEnabled = true;
                 }
                 else
                 {
@@ -170,10 +170,14 @@ Rules:
                     {
                         PasteValuesToForm(pasteValues);
                         pasteProgressRing.Visibility = Visibility.Collapsed;
-                        ((Button)sender).IsEnabled = true;
+                       // ((Button)sender).IsEnabled = true;
                     });
                 }
             });
+        }
+        private async void SmartPasteButton_Click(object sender, RoutedEventArgs e)
+        {
+           
         }
 
         private void PasteValuesToForm(Dictionary<string, string> values)

@@ -36,7 +36,6 @@ namespace NotesWPF
 
             await ClassifyImage(ImagePath);
 
-
             if (localModelDetails.ShouldWaitForCompletion)
             {
                 await localModelDetails.SampleLoadedCompletionSource.Task;
@@ -64,32 +63,32 @@ namespace NotesWPF
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", Path.GetFileName(new Uri(filePath, UriKind.Absolute).LocalPath));
             var predictions = await Task.Run(() =>
             {
-                    Bitmap image = new Bitmap(path);
+                Bitmap image = new Bitmap(path);
 
-                    // Resize image
-                    int width = 224;
-                    int height = 224;
-                    var resizedImage = BitmapFunctions.ResizeBitmap(image, width, height);
-                    image.Dispose();
-                    image = resizedImage;
+                // Resize image
+                int width = 224;
+                int height = 224;
+                var resizedImage = BitmapFunctions.ResizeBitmap(image, width, height);
+                image.Dispose();
+                image = resizedImage;
 
-                    // Preprocess image
-                    Tensor<float> input = new DenseTensor<float>(new[] { 1, 3, 224, 224 });
-                    input = BitmapFunctions.PreprocessBitmapWithStdDev(image, input);
-                    image.Dispose();
+                // Preprocess image
+                Tensor<float> input = new DenseTensor<float>(new[] { 1, 3, 224, 224 });
+                input = BitmapFunctions.PreprocessBitmapWithStdDev(image, input);
+                image.Dispose();
 
-                    // Setup inputs
-                    var inputs = new List<NamedOnnxValue>
+                // Setup inputs
+                var inputs = new List<NamedOnnxValue>
                 {
                     NamedOnnxValue.CreateFromTensor("input", input)
                 };
 
-                    // Run inference
-                    using IDisposableReadOnlyCollection<DisposableNamedOnnxValue> results = _inferenceSession!.Run(inputs);
+                // Run inference
+                using IDisposableReadOnlyCollection<DisposableNamedOnnxValue> results = _inferenceSession!.Run(inputs);
 
-                    // Postprocess to get softmax vector
-                    IEnumerable<float> output = results[0].AsEnumerable<float>();
-                    return ImageNet.GetSoftmax(output);
+                // Postprocess to get softmax vector
+                IEnumerable<float> output = results[0].AsEnumerable<float>();
+                return ImageNet.GetSoftmax(output);
             });
 
             PredictionsListView.ItemsSource = predictions;

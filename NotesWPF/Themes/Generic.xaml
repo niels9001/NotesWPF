@@ -19,13 +19,13 @@
                             ItemsSource="{Binding Fields, RelativeSource={RelativeSource TemplatedParent}}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                
-                            
-                            <StackPanel Orientation="Vertical">
+
+
+                                    <StackPanel Orientation="Vertical">
                                         <TextBlock Text="{Binding Label}" />
                                         <TextBox Width="264" Text="{Binding Value, Mode=TwoWay}" />
                                     </StackPanel>
-                            
+
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

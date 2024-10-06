@@ -13,12 +13,20 @@
     DragOver="Window_DragOver"
     Drop="Window_Drop"
     mc:Ignorable="d">
-    <Grid>
-
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
         <controls:SmartPasteForm
             x:Name="SmartForm"
             Grid.Column="1"
             Width="240"
+            Height="240"
             FieldLabels="{Binding FieldLabels}" />
+        <Button
+            Grid.Row="3"
+            HorizontalAlignment="Right"
+            Content="Save" />
     </Grid>
 </Window>

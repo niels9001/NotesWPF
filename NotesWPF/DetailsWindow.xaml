@@ -20,12 +20,30 @@
             Width="300"
             Height="300"
             Margin="16"
-            HorizontalAlignment="Left" />
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top" />
         <TextBlock Grid.Column="1" Text="" />
-        <controls:SmartPasteForm
-            x:Name="SmartForm"
+
+        <ListView
+            x:Name="PredictionsListView"
             Grid.Column="1"
-            Width="240"
-            FieldLabels="{Binding FieldLabels}" />
+            Margin="12"
+            BorderThickness="0">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="320" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Label}" />
+                        <TextBlock
+                            Grid.Column="1"
+                            FontWeight="SemiBold"
+                            Text="{Binding Confidence}" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Window>

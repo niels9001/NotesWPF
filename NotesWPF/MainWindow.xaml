@@ -24,6 +24,7 @@
                 <MenuItem Header="Device">
                     <MenuItem Header="Search devices" />
                     <MenuItem Header="Connect" />
+                    <MenuItem Click="Registry_Click" Header="Registry" />
                     <MenuItem Header="Disconnect" />
                 </MenuItem>
                 <MenuItem Header="About">
@@ -154,7 +155,7 @@
                             HorizontalAlignment="Right"
                             Click="Import_Click"
                             Content="Import"
-                            Style="{StaticResource PurpleButtonStyle}" />
+                            Style="{StaticResource AccentButtonStyle}" />
                     </Grid>
                     <ListView
                         x:Name="PicturesListView"

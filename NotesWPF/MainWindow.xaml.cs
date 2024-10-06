@@ -117,5 +117,11 @@ namespace NotesWPF
             DetailsWindow w = new DetailsWindow(e.AddedItems[0].ToString());
             w.Show();
         }
+
+        private void Registry_Click(object sender, RoutedEventArgs e)
+        {
+            RegistryWindow w = new RegistryWindow();
+            w.Show();
+        }
     }
 }

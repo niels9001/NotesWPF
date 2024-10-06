@@ -1,25 +1,18 @@
-﻿using Microsoft.ML.OnnxRuntimeGenAI;
-using NotesWPF.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.ML.OnnxRuntime;
+using Microsoft.ML.OnnxRuntime.Tensors;
+using NotesWPF.Classify;
+using System.Drawing;
+using System.IO;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.Windows.Resources;
+using Windows.System;
 
 namespace NotesWPF
 {
     public partial class DetailsWindow : Window
     {
-        private GenAIModel? model;
-        public List<string> FieldLabels { get; set; } = new List<string> { "Name", "Address", "City", "State", "Zip" };
+        private InferenceSession? _inferenceSession;
 
         public DetailsWindow(string ImagePath)
         {
@@ -29,25 +22,20 @@ namespace NotesWPF
             bmp.UriSource = new Uri(ImagePath);
             bmp.EndInit();
             img.Source = bmp;
-            this.Unloaded += (s, e) => CleanUp();
-            Load();
+            this.Unloaded += (s, e) => _inferenceSession?.Dispose();
+            Load(ImagePath);
         }
 
-        private async void Load()
+        public async void Load(string ImagePath)
         {
             var sampleLoadingCts = new CancellationTokenSource();
-
-            var localModelDetails = new SmartPasteSampleNavigationParameter(sampleLoadingCts.Token);
-
-
+            var localModelDetails = new ClassifySampleNavigationParameter(sampleLoadingCts.Token);
             localModelDetails.RequestWaitForCompletion();
-                model = await GenAIModel.CreateAsync(localModelDetails.ModelPath, localModelDetails.PromptTemplate, localModelDetails.CancellationToken);
-                if (model != null)
-                {
-                    this.SmartForm.Model = model;
-                localModelDetails.NotifyCompletion();
-                }
-            
+            await InitModel(localModelDetails.ModelPath);
+            localModelDetails.NotifyCompletion();
+
+            await ClassifyImage(ImagePath);
+
 
             if (localModelDetails.ShouldWaitForCompletion)
             {
@@ -55,10 +43,57 @@ namespace NotesWPF
             }
         }
 
-
-        private void CleanUp()
+        private Task InitModel(string modelPath)
         {
-            model?.Dispose();
+            return Task.Run(() =>
+            {
+                if (_inferenceSession != null)
+                {
+                    return;
+                }
+
+                SessionOptions sessionOptions = new SessionOptions();
+                sessionOptions.RegisterOrtExtensions();
+
+                _inferenceSession = new InferenceSession(modelPath, sessionOptions);
+            });
+        }
+
+        private async Task ClassifyImage(string filePath)
+        {
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", Path.GetFileName(new Uri(filePath, UriKind.Absolute).LocalPath));
+            var predictions = await Task.Run(() =>
+            {
+                    Bitmap image = new Bitmap(path);
+
+                    // Resize image
+                    int width = 224;
+                    int height = 224;
+                    var resizedImage = BitmapFunctions.ResizeBitmap(image, width, height);
+                    image.Dispose();
+                    image = resizedImage;
+
+                    // Preprocess image
+                    Tensor<float> input = new DenseTensor<float>(new[] { 1, 3, 224, 224 });
+                    input = BitmapFunctions.PreprocessBitmapWithStdDev(image, input);
+                    image.Dispose();
+
+                    // Setup inputs
+                    var inputs = new List<NamedOnnxValue>
+                {
+                    NamedOnnxValue.CreateFromTensor("input", input)
+                };
+
+                    // Run inference
+                    using IDisposableReadOnlyCollection<DisposableNamedOnnxValue> results = _inferenceSession!.Run(inputs);
+
+                    // Postprocess to get softmax vector
+                    IEnumerable<float> output = results[0].AsEnumerable<float>();
+                    return ImageNet.GetSoftmax(output);
+            });
+
+            PredictionsListView.ItemsSource = predictions;
         }
     }
 }
+           

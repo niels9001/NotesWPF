@@ -37,6 +37,7 @@ namespace NotesWPF
                 "pack://application:,,,/Assets/Picture6.png",
                 "pack://application:,,,/Assets/Picture7.png",
                 "pack://application:,,,/Assets/Picture8.png",
+                "pack://application:,,,/Assets/StreetSign.png",
                 "pack://application:,,,/Assets/Picture9.png",
                 "pack://application:,,,/Assets/Picture10.png",
                 "pack://application:,,,/Assets/Picture11.png",

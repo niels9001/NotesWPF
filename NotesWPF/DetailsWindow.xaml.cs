@@ -24,6 +24,7 @@ namespace NotesWPF
             img.Source = bmp;
             this.Unloaded += (s, e) => _inferenceSession?.Dispose();
             Load(ImagePath);
+            HandleOCR(ImagePath);
         }
 
         public async void Load(string ImagePath)
@@ -93,6 +94,19 @@ namespace NotesWPF
 
             PredictionsListView.ItemsSource = predictions;
         }
+
+#region OCR
+    private void HandleOCR(string path)
+        {
+            if (path.Contains("StreetSign"))
+            {
+                OCRPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                OCRPanel.Visibility = Visibility.Collapsed;
+            }
+        }
+#endregion
     }
 }
-           

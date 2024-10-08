@@ -24,26 +24,40 @@
             VerticalAlignment="Top" />
         <TextBlock Grid.Column="1" Text="" />
 
-        <ListView
-            x:Name="PredictionsListView"
+        <StackPanel
             Grid.Column="1"
-            Margin="12"
-            BorderThickness="0">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="320" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Label}" />
-                        <TextBlock
-                            Grid.Column="1"
-                            FontWeight="SemiBold"
-                            Text="{Binding Confidence}" />
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            Margin="12,12,0,0"
+            Orientation="Vertical">
+            <TextBlock FontWeight="SemiBold" Text="Tags" />
+            <ListView
+                x:Name="PredictionsListView"
+                Margin="12"
+                BorderThickness="0">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="320" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Label}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                FontWeight="SemiBold"
+                                Text="{Binding Confidence}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <StackPanel
+                x:Name="OCRPanel"
+                Orientation="Vertical"
+                Visibility="Collapsed">
+                <TextBlock FontWeight="SemiBold" Text="Extracted text" />
+                <TextBlock Text="MAIN STREET" />
+            </StackPanel>
+        </StackPanel>
+
     </Grid>
 </Window>

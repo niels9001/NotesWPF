@@ -11,7 +11,6 @@
     Icon="Icon.ico"
     Loaded="Window_Loaded"
     ResizeMode="CanResize"
-    ThemeMode="System"
     mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
@@ -155,7 +154,7 @@
                             HorizontalAlignment="Right"
                             Click="Import_Click"
                             Content="Import"
-                            Style="{StaticResource AccentButtonStyle}" />
+                            Style="{StaticResource PurpleButtonStyle}" />
                     </Grid>
                     <ListView
                         x:Name="PicturesListView"
